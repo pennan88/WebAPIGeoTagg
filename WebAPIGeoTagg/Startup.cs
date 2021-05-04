@@ -30,7 +30,8 @@ namespace WebAPIGeoTagg
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIGeoTagg", Version = "v1" });
-                var path = Path.Combine(AppContext.BaseDirectory, "GeoTagging.xml");
+
+                var path = Path.Combine(AppContext.BaseDirectory, "WebAPIGeoTaggDocument.xml");
                 c.IncludeXmlComments(path);
             });
 
