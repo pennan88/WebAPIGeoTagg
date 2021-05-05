@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 using WebAPIGeoTagg.Data;
+using WebAPIGeoTagg.Handler;
 
 namespace WebAPIGeoTagg
 {
@@ -45,6 +46,31 @@ namespace WebAPIGeoTagg
 
             services.AddSwaggerGen(c =>
             {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIGeoTagg", Version = "v1" });
+               
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic Authorization header using the Bearer scheme."
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basic"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+
                 c.SwaggerDoc("v1", new OpenApiInfo
                 { Title = "GeoTagging v1", Version = "v1.0" });
 
@@ -71,6 +97,8 @@ namespace WebAPIGeoTagg
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIGeoTagg v1"));
+               
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint($"/swagger/v1/swagger.json", "v1.0");
