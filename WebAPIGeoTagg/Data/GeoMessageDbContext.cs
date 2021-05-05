@@ -20,7 +20,7 @@ namespace WebAPIGeoTagg.Data
         }
 
         public DbSet<GeoMessage> GeoMessages { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public static async Task Reset(IServiceProvider provider)
         {
             var context = provider.GetRequiredService<GeoMessageDbContext>();

@@ -64,6 +64,7 @@ namespace GeoTaggV2
         }
 
         [HttpPost]
+        [Authorize]
         public IEnumerable<GeoMessage> PostMessage()
         {
             return Enumerable.Range(1, 3).Select(index => new GeoMessage

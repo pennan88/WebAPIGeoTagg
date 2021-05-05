@@ -26,15 +26,17 @@ namespace WebAPIGeoTagg.Handler
            UserManager<IdentityUser> userManager)
             : base(options, logger, encoder, clock)
         {
-
+            _userManager = userManager;
         }
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var endpoint = Context.GetEndpoint();
             if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
                 return AuthenticateResult.NoResult();
+
             if (!Request.Headers.ContainsKey("Authorization"))
                 return AuthenticateResult.Fail("Missing Authorization header");
+
             IdentityUser user;
             string Password;
             try
@@ -51,9 +53,9 @@ namespace WebAPIGeoTagg.Handler
                 return AuthenticateResult.Fail("Invalid Authorization Header");
 
             }
-            if(user == null || Password == null ||
-                await _userManager .CheckPasswordAsync(user,Password) == false)
-                    return AuthenticateResult.Fail("Invalid Username or Password");
+            if (user == null || Password == null ||
+                await _userManager.CheckPasswordAsync(user, Password) == false)
+                return AuthenticateResult.Fail("Invalid Username or Password");
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
