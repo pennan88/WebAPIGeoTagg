@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,12 +28,33 @@ namespace WebAPIGeoTagg
         {
 
             services.AddControllers();
+
+            services.AddApiVersioning(o =>
+            {
+                o.DefaultApiVersion = new ApiVersion(2, 0);
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.ReportApiVersions = true;
+            });
+
+            services.AddVersionedApiExplorer(o =>
+            {
+                o.GroupNameFormat = "'v'VVV";
+
+                o.SubstituteApiVersionInUrl = true;
+            });
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIGeoTagg", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                { Title = "GeoTagging v1", Version = "v1.0" });
+
+                c.SwaggerDoc("v2", new OpenApiInfo
+                { Title = "GeoTagging v2", Version = "v2.0" });
 
                 var path = Path.Combine(AppContext.BaseDirectory, "WebAPIGeoTaggDocument.xml");
                 c.IncludeXmlComments(path);
+
+                c.EnableAnnotations();
             });
 
             services.AddDbContext<GeoMessageDbContext>(options =>
@@ -40,7 +62,6 @@ namespace WebAPIGeoTagg
 
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<GeoMessageDbContext>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,9 +71,13 @@ namespace WebAPIGeoTagg
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIGeoTagg v1"));
-            }
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint($"/swagger/v1/swagger.json", "v1.0");
+                    c.SwaggerEndpoint($"/swagger/v2/swagger.json", "v2.0");
 
+                });
+            }
             app.UseHttpsRedirection();
 
             app.UseRouting();

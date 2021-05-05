@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebAPIGeoTagg</name>
+    </assembly>
+    <members>
+        <member name="M:GeoTaggV1.GeoMessageController.GetMessagesTest(System.String)">
+            <summary>
+            Överblick på GeoTagg Meddelanden
+            </summary>
+            <Param name="tagg" example="">
+            <para>Här kan du se GeoTagg Meddelanden</para>
+            </Param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
