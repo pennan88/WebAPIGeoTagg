@@ -15,7 +15,6 @@ namespace GeoTaggV1
     [Route("api/v{version:apiVersion}/[controller]")]
     public class GeoMessageController : ControllerBase
     {
-
         [HttpGet("[action]")]
         [SwaggerOperation(
             Summary = "Överblick på GeoTagg Meddelanden",
@@ -31,28 +30,6 @@ namespace GeoTaggV1
 
             });
         }
-
-        /// <summary>
-        ///     Överblick på GeoTagg Meddelanden
-        /// </summary>
-        /// 
-        /// <Param name="tagg" example="">
-        ///     <para>Här kan du se GeoTagg Meddelanden</para>
-        /// </Param>
-        /// 
-        /// <returns></returns>
-        [HttpGet("[action]")]
-        public IEnumerable<GeoMessage> GetMessagesTest(string tagg)
-        {
-            return Enumerable.Range(1, 3).Select(index => new GeoMessage
-            {
-                Message = "",
-                Latitude = 0,
-                Logitude = 0
-
-            });
-        }
-
     }
 }
 namespace GeoTaggV2
