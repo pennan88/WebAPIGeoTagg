@@ -9,20 +9,20 @@ using WebAPIGeoTagg.Models;
 
 namespace WebAPIGeoTagg.Controllers
 {
+  
     [Route("api/[controller]")]
     [ApiController]
     public class GeoMessageController : ControllerBase
     {
-
         [HttpGet]
         [Route("/api/v1/geo-comments/{id}")]
         public IEnumerable<GeoMessage> GetMessageId()
         {
             return Enumerable.Range(1, 3).Select(index => new GeoMessage
             {
-                Message = "Message",
-                Latitude = 443,
-                Logitude = 123
+                Message = "",
+                Latitude = 0,
+                Logitude = 0
 
             });
         }
@@ -33,9 +33,9 @@ namespace WebAPIGeoTagg.Controllers
         {
             return Enumerable.Range(1, 3).Select(index => new GeoMessage
             {
-                Message = "Message",
-                Latitude = 443,
-                Logitude = 123
+                Message = "",
+                Latitude = 0,
+                Logitude = 0
 
             });
         }
@@ -47,9 +47,9 @@ namespace WebAPIGeoTagg.Controllers
         {
             return Enumerable.Range(1, 3).Select(index => new GeoMessage
             {
-                Message = "Message",
-                Latitude = 443,
-                Logitude = 123
+                Message = "",
+                Latitude = 0,
+                Logitude = 0
 
             });
         }

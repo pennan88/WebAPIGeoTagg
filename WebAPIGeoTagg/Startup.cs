@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 using WebAPIGeoTagg.Data;
+using WebAPIGeoTagg.Handler;
 
 namespace WebAPIGeoTagg
 {
@@ -30,6 +31,29 @@ namespace WebAPIGeoTagg
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIGeoTagg", Version = "v1" });
+               
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic Authorization header using the Bearer scheme."
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basic"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
 
                 var path = Path.Combine(AppContext.BaseDirectory, "WebAPIGeoTaggDocument.xml");
                 c.IncludeXmlComments(path);
@@ -40,6 +64,8 @@ namespace WebAPIGeoTagg
 
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<GeoMessageDbContext>();
+            services.AddAuthentication("BasicAthentication")
+                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAthentication", null);
 
         }
 
