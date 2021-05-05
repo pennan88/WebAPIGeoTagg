@@ -6,11 +6,13 @@
     <members>
         <member name="M:GeoTaggV1.GeoMessageController.GetMessagesTest(System.String)">
             <summary>
-            �verblick p� GeoTagg Meddelanden
+                Överblick på GeoTagg Meddelanden
             </summary>
+            
             <Param name="tagg" example="">
-            <para>H�r kan du se GeoTagg Meddelanden</para>
+                <para>Här kan du se GeoTagg Meddelanden</para>
             </Param>
+            
             <returns></returns>
         </member>
     </members>

@@ -33,7 +33,7 @@ namespace WebAPIGeoTagg.Data
             {
                 UserName = "TestUser"
             },
-            "QWEqwe123!\"#");
+            "QWEqwe123!");
 
         }
 
