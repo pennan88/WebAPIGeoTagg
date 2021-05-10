@@ -20,15 +20,22 @@ namespace GeoTaggV1
             Summary = "Överblick på GeoTagg Meddelanden",
             Description = "Här kan du se GeoTagg Meddelanden"
             )]
-        public IEnumerable<GeoMessage> GetMessages()
+        public IEnumerable<GeoMessagev1> GetMessages()
         {
-            return Enumerable.Range(1, 3).Select(index => new GeoMessage
+            return Enumerable.Range(1, 3).Select(index => new GeoMessagev1
             {
                 Message = "",
                 Latitude = 0,
                 Logitude = 0
 
             });
+        }
+        public class GeoMessagev1
+        {
+            public string Message { get; set; }
+            public double Logitude { get; set; }
+
+            public double Latitude { get; set; }
         }
     }
 }
@@ -50,7 +57,7 @@ namespace GeoTaggV2
 
             });
         }
-
+       
         [HttpGet("[action]")]
         public IEnumerable<GeoMessage> GetMessages()
         {
@@ -75,7 +82,20 @@ namespace GeoTaggV2
 
             });
         }
+        public class Messagebody
+        {
+            public string Message { get; set; }
+            public string Body { get; set; }
+            public string Title { get; set; }
+            public string Author { get; set; }
+            public class coordinates
+            {
 
+                public double Logitude { get; set; }
+
+                public double Latitude { get; set; }
+            }
+        }
 
     }
 }
