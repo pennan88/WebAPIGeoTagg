@@ -9,7 +9,7 @@ using WebAPIGeoTagg.Data;
 
 namespace WebAPIGeoTagg.Data.Migrations
 {
-    [DbContext(typeof(GeoMessageDbContext))]
+    [DbContext(typeof(GeoCommentDbContext))]
     [Migration("20210510121344_Firstmig")]
     partial class Firstmig
     {

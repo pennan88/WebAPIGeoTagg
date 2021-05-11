@@ -82,11 +82,11 @@ namespace WebAPIGeoTagg
                 c.EnableAnnotations();
             });
 
-            services.AddDbContext<GeoMessageDbContext>(options =>
+            services.AddDbContext<GeoCommentDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("UserDbContextConnection")));
 
             services.AddIdentityCore<IdentityUser>()
-                .AddEntityFrameworkStores<GeoMessageDbContext>();
+                .AddEntityFrameworkStores<GeoCommentDbContext>();
 
             services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
@@ -108,13 +108,13 @@ namespace WebAPIGeoTagg
             }
             app.UseHttpsRedirection();
 
-            /*
+
             app.UseCors(options => options.
             SetIsOriginAllowed(origin => true)
             .AllowCredentials()
             .AllowAnyMethod()
             .AllowAnyHeader());
-            */
+
 
 
             app.UseRouting();

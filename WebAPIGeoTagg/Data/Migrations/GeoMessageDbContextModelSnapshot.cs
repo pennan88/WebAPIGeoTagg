@@ -8,7 +8,7 @@ using WebAPIGeoTagg.Data;
 
 namespace WebAPIGeoTagg.Data.Migrations
 {
-    [DbContext(typeof(GeoMessageDbContext))]
+    [DbContext(typeof(GeoCommentDbContext))]
     partial class GeoMessageDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

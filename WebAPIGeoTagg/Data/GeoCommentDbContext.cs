@@ -10,10 +10,10 @@ using WebAPIGeoTagg.Models;
 
 namespace WebAPIGeoTagg.Data
 {
-    public class GeoMessageDbContext : IdentityDbContext<IdentityUser>
+    public class GeoCommentDbContext : IdentityDbContext<IdentityUser>
     {
 
-        public GeoMessageDbContext(DbContextOptions<GeoMessageDbContext> options) :
+        public GeoCommentDbContext(DbContextOptions<GeoCommentDbContext> options) :
             base(options)
         {
 
@@ -24,7 +24,7 @@ namespace WebAPIGeoTagg.Data
         //public DbSet<User> Users { get; set; }
         public static async Task Reset(IServiceProvider provider)
         {
-            var context = provider.GetRequiredService<GeoMessageDbContext>();
+            var context = provider.GetRequiredService<GeoCommentDbContext>();
             await context.Database.EnsureDeletedAsync();
             await context.Database.EnsureCreatedAsync();
 

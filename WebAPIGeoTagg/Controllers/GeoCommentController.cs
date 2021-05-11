@@ -17,9 +17,9 @@ namespace GeoTaggV1
     [Route("api/v{version:apiVersion}/[controller]")]
     public class GeoCommentController : ControllerBase
     {
-        private readonly GeoMessageDbContext _context;
+        private readonly GeoCommentDbContext _context;
 
-        public GeoCommentController(GeoMessageDbContext context)
+        public GeoCommentController(GeoCommentDbContext context)
         {
             _context = context;
         }
@@ -48,9 +48,9 @@ namespace GeoTaggV1
         [HttpGet("[action]/{id}")]
         [SwaggerOperation(
             Summary = "Överblick på specifika GeoTagg Meddelanden",
-            Description = "Här kan du se specifika GeoTagg Meddelanden"
+            Description = "Här kan du se specifika GeoTagg Meddelanden med hjälp av ett ID"
             )]
-        public async Task<ActionResult<GeoComment>> GetCommentId_V1(int id)
+        public async Task<ActionResult<GeoComment>> GetCommentV1(int id)
         {
             var geoMessages = await _context.GeoComment2.Include(a => a.Message).FirstOrDefaultAsync(b => b.Id == id);
 
@@ -70,6 +70,10 @@ namespace GeoTaggV1
 
         [HttpPost("[action]")]
         [Authorize]
+        [SwaggerOperation(
+            Summary = "En post för nya GeoComments",
+            Description = "Här kan du lägga till nya GeoComments"
+            )]
         public async Task<ActionResult<GeoComment>> PostCommentV1(GeoComment geoComment)
         {
             var v2model = new GeoCommentVersion2
@@ -84,7 +88,7 @@ namespace GeoTaggV1
             _context.GeoComment2.Add(v2model);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCommentId_V1", new { id = geoComment.Id }, geoComment);
+            return CreatedAtAction("GetCommentV1", new { id = geoComment.Id }, geoComment);
 
         }
     }
@@ -96,32 +100,34 @@ namespace GeoTaggV2
     [Route("api/v{version:apiVersion}/[controller]")]
     public class GeoMessageController : ControllerBase
     {
-        private readonly GeoMessageDbContext _context;
+        private readonly GeoCommentDbContext _context;
 
-        public GeoMessageController(GeoMessageDbContext context)
+        public GeoMessageController(GeoCommentDbContext context)
         {
             _context = context;
         }
 
-
+        [HttpGet("[action]/{id}")]
+        public async Task<ActionResult<GeoCommentVersion2>> GetCommentV2(int id)
+        {
+            return await _context.GeoComment2.Include(a => a.Message).FirstOrDefaultAsync(o => o.Id == id);
+        }
 
         [HttpGet("[action]")]
-        public async Task<GeoCommentVersion2> GetCommentId_V2(int id)
+        public async Task<ActionResult<IEnumerable<GeoCommentVersion2>>> GetCommentV2(double minLon, double minLat, double maxLon, double maxLat)
         {
-            var test = await _context.GeoComment2.Include(e => e.Message).FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.GeoComment2.Include(a => a.Message)
+                .Where(o => (o.Logitude <= maxLon && o.Logitude >= minLon) && (o.Latitude <= maxLat && o.Latitude >= minLat))
+                .ToListAsync();
+        }
 
-            GeoCommentVersion2 message = new GeoCommentVersion2
-            {
-                Message = new Message
-                {
-                    Author = test.Message.Author,
-                    Body = test.Message.Body,
-                    Title = test.Message.Title,
-                },
-                Latitude = test.Latitude,
-                Logitude = test.Logitude,
-            };
-            return message;
+        [HttpPost("[action]")]
+        public async Task<ActionResult<GeoCommentVersion2>> PostCommentV2(GeoCommentVersion2 geoComment)
+        {
+            _context.GeoComment2.Add(geoComment);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetCommentV2", new { id = geoComment.Id }, geoComment);
         }
 
     };

@@ -20,7 +20,7 @@ namespace WebAPIGeoTagg
             {
                 var provider = scope.ServiceProvider;
 
-                Data.GeoMessageDbContext.Reset(provider).Wait();
+                Data.GeoCommentDbContext.Reset(provider).Wait();
             }
 
             host.Run();
