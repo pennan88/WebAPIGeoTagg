@@ -27,7 +27,7 @@ namespace GeoTaggV1
         [HttpGet("[action]")]
         [SwaggerOperation(
             Summary = "Överblick på GeoTagg Meddelanden",
-            Description = "Här kan du se GeoTagg Meddelanden"
+            Description = "Här kan du se alla GeoTagg Meddelanden"
             )]
 
         public async Task<ActionResult<IEnumerable<GeoComment>>> GetCommentV1()
@@ -46,6 +46,10 @@ namespace GeoTaggV1
 
 
         [HttpGet("[action]/{id}")]
+        [SwaggerOperation(
+            Summary = "Överblick på specifika GeoTagg Meddelanden",
+            Description = "Här kan du se specifika GeoTagg Meddelanden"
+            )]
         public async Task<ActionResult<GeoComment>> GetCommentId_V1(int id)
         {
             var geoMessages = await _context.GeoComment2.Include(a => a.Message).FirstOrDefaultAsync(b => b.Id == id);
@@ -102,25 +106,22 @@ namespace GeoTaggV2
 
 
         [HttpGet("[action]")]
-        public async Task<ActionResult<IEnumerable<GeoComment>>> GetCommentV2()
+        public async Task<GeoCommentVersion2> GetCommentId_V2(int id)
         {
-            return await _context.GeoComment2.Include(m => m.Message).ToListAsync();
-        }
+            var test = await _context.GeoComment2.Include(e => e.Message).FirstOrDefaultAsync(i => i.Id == id);
 
-
-        public class Messagebody
-        {
-            public string Message { get; set; }
-            public string Body { get; set; }
-            public string Title { get; set; }
-            public string Author { get; set; }
-            public class coordinates
+            GeoCommentVersion2 message = new GeoCommentVersion2
             {
-
-                public double Logitude { get; set; }
-
-                public double Latitude { get; set; }
-            }
+                Message = new Message
+                {
+                    Author = test.Message.Author,
+                    Body = test.Message.Body,
+                    Title = test.Message.Title,
+                },
+                Latitude = test.Latitude,
+                Logitude = test.Logitude,
+            };
+            return message;
         }
 
     };
