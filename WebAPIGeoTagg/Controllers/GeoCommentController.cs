@@ -108,6 +108,21 @@ namespace GeoTaggV2
         }
 
 
+        public class Messagebody
+        {
+            public string Message { get; set; }
+            public string Body { get; set; }
+            public string Title { get; set; }
+            public string Author { get; set; }
+            public class coordinates
+            {
+
+                public double Logitude { get; set; }
+
+                public double Latitude { get; set; }
+            }
+        }
+
     };
 
 }

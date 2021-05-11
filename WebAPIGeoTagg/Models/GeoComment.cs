@@ -9,10 +9,7 @@ namespace WebAPIGeoTagg.Models
     {
         public int Id { get; set; }
         public string Message { get; set; }
-        public string Body { get; set; }
-        public string  Title{ get; set; }
-        public string Author { get; set; }
-        
+
         public double Logitude { get; set; }
 
         public double Latitude { get; set; }
