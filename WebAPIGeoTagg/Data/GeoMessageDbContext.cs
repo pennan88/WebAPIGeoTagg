@@ -18,8 +18,9 @@ namespace WebAPIGeoTagg.Data
         {
 
         }
+        public DbSet<GeoCommentVersion2> GeoComment2 { get; set; }
+        public DbSet<Message> messages { get; set; }
 
-        public DbSet<GeoMessage> GeoMessages { get; set; }
         //public DbSet<User> Users { get; set; }
         public static async Task Reset(IServiceProvider provider)
         {
