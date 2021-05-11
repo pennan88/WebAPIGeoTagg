@@ -26,7 +26,7 @@ namespace GeoTaggV1
 
         [HttpGet("[action]")]
         [SwaggerOperation(
-            Summary = "Överblick på GeoTagg Meddelanden",
+            Summary = "V1 Överblick på GeoTagg Meddelanden",
             Description = "Här kan du se alla GeoTagg Meddelanden"
             )]
 
@@ -47,7 +47,7 @@ namespace GeoTaggV1
 
         [HttpGet("[action]/{id}")]
         [SwaggerOperation(
-            Summary = "Överblick på specifika GeoTagg Meddelanden",
+            Summary = "V1 Överblick på specifika GeoTagg Meddelanden",
             Description = "Här kan du se specifika GeoTagg Meddelanden med hjälp av ett ID"
             )]
         public async Task<ActionResult<GeoComment>> GetCommentV1(int id)
@@ -71,7 +71,7 @@ namespace GeoTaggV1
         [HttpPost("[action]")]
         [Authorize]
         [SwaggerOperation(
-            Summary = "En post för nya GeoComments",
+            Summary = "V1 En post för nya GeoComments",
             Description = "Här kan du lägga till nya GeoComments"
             )]
         public async Task<ActionResult<GeoComment>> PostCommentV1(GeoComment geoComment)
@@ -107,13 +107,11 @@ namespace GeoTaggV2
             _context = context;
         }
 
-        [HttpGet("[action]/{id}")]
-        public async Task<ActionResult<GeoCommentVersion2>> GetCommentV2(int id)
-        {
-            return await _context.GeoComment2.Include(a => a.Message).FirstOrDefaultAsync(o => o.Id == id);
-        }
-
         [HttpGet("[action]")]
+        [SwaggerOperation(
+            Summary = "V2 Överblick på GeoTagg Meddelanden, nu med Min/Max begränsningar",
+            Description = "Här kan du se alla GeoTagg Meddelanden och söker efter min/max värden"
+            )]
         public async Task<ActionResult<IEnumerable<GeoCommentVersion2>>> GetCommentV2(double minLon, double minLat, double maxLon, double maxLat)
         {
             return await _context.GeoComment2.Include(a => a.Message)
@@ -121,7 +119,22 @@ namespace GeoTaggV2
                 .ToListAsync();
         }
 
+        [HttpGet("[action]/{id}")]
+        [SwaggerOperation(
+            Summary = "V2 Överblick på specifika GeoTagg Meddelanden",
+            Description = "Här kan du se specifika GeoTagg Meddelanden med hjälp av ett ID"
+            )]
+        public async Task<ActionResult<GeoCommentVersion2>> GetCommentV2(int id)
+        {
+            return await _context.GeoComment2.Include(a => a.Message).FirstOrDefaultAsync(o => o.Id == id);
+        }
+
         [HttpPost("[action]")]
+        [Authorize]
+        [SwaggerOperation(
+            Summary = "V1 En post för nya GeoComments",
+            Description = "Här kan du lägga till nya GeoComments"
+            )]
         public async Task<ActionResult<GeoCommentVersion2>> PostCommentV2(GeoCommentVersion2 geoComment)
         {
             _context.GeoComment2.Add(geoComment);
