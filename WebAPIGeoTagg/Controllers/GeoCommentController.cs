@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,15 +30,14 @@ namespace GeoTaggV1
             Summary = "V1 Överblick på GeoTagg Meddelanden",
             Description = "Här kan du se alla GeoTagg Meddelanden"
             )]
-
-        public async Task<ActionResult<IEnumerable<GeoComment>>> GetCommentV1()
+        public async Task<ActionResult<IEnumerable<DTOList.GetDTOV1>>> GetCommentV1()
         {
-            List<GeoCommentVersion2> v2list = await _context.GeoComment2.Include(a => a.Message).ToListAsync();
-            List<GeoComment> v1list = new List<GeoComment>();
+            List<GeoCommentVersion2> V2_list = await _context.GeoComment2.Include(a => a.Message).ToListAsync();
+            List<DTOList.GetDTOV1> v1list = new List<DTOList.GetDTOV1>();
 
-            foreach (var item in v2list)
+            foreach (var item in V2_list)
             {
-                GeoComment geoMessage = new GeoComment { Message = item.Message.Body, Latitude = item.Latitude, Logitude = item.Logitude };
+                DTOList.GetDTOV1 geoMessage = new DTOList.GetDTOV1 { Message = item.Message.Body, Latitude = item.Latitude, Longitude = item.Longitude };
                 v1list.Add(geoMessage);
             }
 
@@ -50,7 +50,7 @@ namespace GeoTaggV1
             Summary = "V1 Överblick på specifika GeoTagg Meddelanden",
             Description = "Här kan du se specifika GeoTagg Meddelanden med hjälp av ett ID"
             )]
-        public async Task<ActionResult<GeoComment>> GetCommentV1(int id)
+        public async Task<ActionResult<DTOList.GetDTOV1>> GetCommentV1(int id)
         {
             var geoMessages = await _context.GeoComment2.Include(a => a.Message).FirstOrDefaultAsync(b => b.Id == id);
 
@@ -58,13 +58,13 @@ namespace GeoTaggV1
             {
                 return NotFound();
             }
-            var v2model = new GeoComment
+            var v1model = new DTOList.GetDTOV1
             {
                 Message = geoMessages.Message.Body,
                 Latitude = geoMessages.Latitude,
-                Logitude = geoMessages.Logitude
+                Longitude = geoMessages.Longitude
             };
-            return v2model;
+            return v1model;
         }
 
 
@@ -74,21 +74,21 @@ namespace GeoTaggV1
             Summary = "V1 En post för nya GeoComments",
             Description = "Här kan du lägga till nya GeoComments"
             )]
-        public async Task<ActionResult<GeoComment>> PostCommentV1(GeoComment geoComment)
+        public async Task<ActionResult<GeoComment>> PostCommentV1(DTOList.GetDTOV1 geoComment)
         {
-            var v2model = new GeoCommentVersion2
+            var V1_model = new GeoCommentVersion2
             {
                 Message = new Message
                 {
                     Body = geoComment.Message
                 },
                 Latitude = geoComment.Latitude,
-                Logitude = geoComment.Logitude
+                Longitude = geoComment.Longitude
             };
-            _context.GeoComment2.Add(v2model);
+            _context.GeoComment2.Add(V1_model);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCommentV1", new { id = geoComment.Id }, geoComment);
+            return CreatedAtAction("GetCommentV1", new { id = V1_model.Id }, V1_model);
 
         }
     }
@@ -112,22 +112,57 @@ namespace GeoTaggV2
             Summary = "V2 Överblick på GeoTagg Meddelanden, nu med Min/Max begränsningar",
             Description = "Här kan du se alla GeoTagg Meddelanden och söker efter min/max värden"
             )]
-        public async Task<ActionResult<IEnumerable<GeoCommentVersion2>>> GetCommentV2(double minLon, double minLat, double maxLon, double maxLat)
+        public async Task<ActionResult<IEnumerable<DTOList.GetDTOV2>>> GetCommentV2(double minLon, double minLat, double maxLon, double maxLat)
         {
-            return await _context.GeoComment2.Include(a => a.Message)
-                .Where(o => (o.Logitude <= maxLon && o.Logitude >= minLon) && (o.Latitude <= maxLat && o.Latitude >= minLat))
+            var GetInfo = await _context.GeoComment2.Include(a => a.Message)
+                .Where(o => (o.Longitude <= maxLon && o.Longitude >= minLon) && (o.Latitude <= maxLat && o.Latitude >= minLat))
                 .ToListAsync();
+
+            List<DTOList.GetDTOV2> DTOV2List = new List<DTOList.GetDTOV2>();
+            foreach (var item in GetInfo)
+            {
+                DTOList.GetDTOV2 Geo_DTO = new DTOList.GetDTOV2()
+                {
+                    Message = new DTOList.MessageDTOV2()
+                    {
+                        Author = item.Message.Author,
+                        Body = item.Message.Body,
+                        Title = item.Message.Title
+                    },
+                    Latitude = item.Latitude,
+                    Longitude = item.Longitude
+                };
+                DTOV2List.Add(Geo_DTO);
+            }
+            return DTOV2List;
         }
+
 
         [HttpGet("[action]/{id}")]
         [SwaggerOperation(
             Summary = "V2 Överblick på specifika GeoTagg Meddelanden",
             Description = "Här kan du se specifika GeoTagg Meddelanden med hjälp av ett ID"
             )]
-        public async Task<ActionResult<GeoCommentVersion2>> GetCommentV2(int id)
+        public async Task<ActionResult<DTOList.GetDTOV2>> GetCommentV2(int id)
         {
-            return await _context.GeoComment2.Include(a => a.Message).FirstOrDefaultAsync(o => o.Id == id);
+            var GetInfo = await _context.GeoComment2.Include(a => a.Message).FirstOrDefaultAsync(o => o.Id == id);
+
+            DTOList.GetDTOV2 Geo_DTO1 = new DTOList.GetDTOV2()
+            {
+
+                Message = new DTOList.MessageDTOV2()
+                {
+                    Author = GetInfo.Message.Author,
+                    Body = GetInfo.Message.Body,
+                    Title = GetInfo.Message.Title,
+                },
+                Latitude = GetInfo.Latitude,
+                Longitude = GetInfo.Longitude
+
+            };
+            return Geo_DTO1;
         }
+
 
         [HttpPost("[action]")]
         [Authorize]
@@ -135,12 +170,25 @@ namespace GeoTaggV2
             Summary = "V1 En post för nya GeoComments",
             Description = "Här kan du lägga till nya GeoComments"
             )]
-        public async Task<ActionResult<GeoCommentVersion2>> PostCommentV2(GeoCommentVersion2 geoComment)
-        {
-            _context.GeoComment2.Add(geoComment);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCommentV2", new { id = geoComment.Id }, geoComment);
+
+        public async Task<ActionResult<GeoCommentVersion2>> PostCommentV2(DTOList.PostDTOV2 geoComment)
+        {
+            GeoCommentVersion2 geoCommentVersion2 = new GeoCommentVersion2()
+            {
+                Message = new Message()
+                {
+                    Body = geoComment.Message.Body,
+                    Title = geoComment.Message.Title,
+                    Author = geoComment.Message.Author,
+                },
+                Latitude = geoComment.Latitude,
+                Longitude = geoComment.Longitude
+            };
+
+            _context.GeoComment2.Add(geoCommentVersion2);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetCommentV2", new { id = geoCommentVersion2.Id }, geoCommentVersion2);
         }
 
     };

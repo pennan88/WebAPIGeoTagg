@@ -47,22 +47,6 @@ namespace WebAPIGeoTagg.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GeoComment",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Logitude = table.Column<double>(type: "float", nullable: false),
-                    Latitude = table.Column<double>(type: "float", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GeoComment", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "messages",
                 columns: table => new
                 {
@@ -183,6 +167,27 @@ namespace WebAPIGeoTagg.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "GeoComment2",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MessageId = table.Column<int>(type: "int", nullable: true),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
+                    Latitude = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GeoComment2", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GeoComment2_messages_MessageId",
+                        column: x => x.MessageId,
+                        principalTable: "messages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -221,6 +226,11 @@ namespace WebAPIGeoTagg.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GeoComment2_MessageId",
+                table: "GeoComment2",
+                column: "MessageId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -241,16 +251,16 @@ namespace WebAPIGeoTagg.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GeoComment");
-
-            migrationBuilder.DropTable(
-                name: "messages");
+                name: "GeoComment2");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "messages");
         }
     }
 }

@@ -66,7 +66,7 @@ namespace WebAPIGeoTagg
                                 Id = "basic"
                             }
                         },
-                        new string[] {}
+                        Array.Empty<string>()
                     }
                 });
 

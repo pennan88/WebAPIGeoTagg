@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPIGeoTagg.Data;
 
 namespace WebAPIGeoTagg.Data.Migrations
 {
     [DbContext(typeof(GeoCommentDbContext))]
-    [Migration("20210510121344_Firstmig")]
-    partial class Firstmig
+    partial class GeoCommentDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,31 +215,27 @@ namespace WebAPIGeoTagg.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("WebAPIGeoTagg.Models.GeoComment", b =>
+            modelBuilder.Entity("WebAPIGeoTagg.Models.GeoCommentVersion2", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
 
-                    b.Property<double>("Logitude")
+                    b.Property<double>("Longitude")
                         .HasColumnType("float");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("MessageId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("GeoComment");
+                    b.HasIndex("MessageId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("GeoComment");
+                    b.ToTable("GeoComment2");
                 });
 
             modelBuilder.Entity("WebAPIGeoTagg.Models.Message", b =>
@@ -263,13 +257,6 @@ namespace WebAPIGeoTagg.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("messages");
-                });
-
-            modelBuilder.Entity("WebAPIGeoTagg.Models.GeoCommentVersion2", b =>
-                {
-                    b.HasBaseType("WebAPIGeoTagg.Models.GeoComment");
-
-                    b.HasDiscriminator().HasValue("GeoCommentVersion2");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -321,6 +308,15 @@ namespace WebAPIGeoTagg.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebAPIGeoTagg.Models.GeoCommentVersion2", b =>
+                {
+                    b.HasOne("WebAPIGeoTagg.Models.Message", "Message")
+                        .WithMany()
+                        .HasForeignKey("MessageId");
+
+                    b.Navigation("Message");
                 });
 #pragma warning restore 612, 618
         }
